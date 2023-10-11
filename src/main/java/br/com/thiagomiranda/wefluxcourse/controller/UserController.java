@@ -1,7 +1,10 @@
 package br.com.thiagomiranda.wefluxcourse.controller;
 
+import br.com.thiagomiranda.wefluxcourse.model.request.UserRequest;
+import br.com.thiagomiranda.wefluxcourse.model.response.UserResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface UserController {
