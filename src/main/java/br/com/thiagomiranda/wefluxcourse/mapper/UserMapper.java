@@ -2,6 +2,7 @@ package br.com.thiagomiranda.wefluxcourse.mapper;
 
 import br.com.thiagomiranda.wefluxcourse.entity.User;
 import br.com.thiagomiranda.wefluxcourse.model.request.UserRequest;
+import br.com.thiagomiranda.wefluxcourse.model.response.UserResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -16,5 +17,7 @@ import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
 public interface UserMapper {
     @Mapping(target = "id", ignore = true)
     User toEntity(final UserRequest request);
+
+    UserResponse toResponse(final User entity);
 
 }
