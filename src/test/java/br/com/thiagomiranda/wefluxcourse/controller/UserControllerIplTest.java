@@ -101,6 +101,8 @@ class UserControllerIplTest {
                 .jsonPath("$.name").isEqualTo(NAME)
                 .jsonPath("$.password").isEqualTo(PASSWORD)
                 .jsonPath("$.email").isEqualTo(EMAIL);
+        verify(service).findById(anyString());
+        verify(userMapper).toResponse(any(User.class));
 
     }
 
@@ -122,10 +124,33 @@ class UserControllerIplTest {
                     .jsonPath("$.[0].name").isEqualTo(NAME)
                     .jsonPath("$.[0].password").isEqualTo(PASSWORD)
                     .jsonPath("$.[0].email").isEqualTo(EMAIL);
+        verify(service).findAll();
+        verify(userMapper).toResponse(any(User.class));
     }
 
     @Test
-    void update() {
+    @DisplayName("Test udpate endpoint with sucess")
+    void testUpdateSucess() {
+
+        final var userResponse = new UserResponse(ID, NAME, PASSWORD, EMAIL);
+        final var request = new UserRequest(NAME, EMAIL, PASSWORD);
+
+        when(service.update(anyString(),any(UserRequest.class))).thenReturn(just(User.builder().build()));
+        when(userMapper.toResponse(any(User.class))).thenReturn(userResponse);
+
+        webTestClient.patch().uri("/users/" + ID)
+                .contentType(APPLICATION_JSON)
+                .body(fromValue(request))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.id").isEqualTo(ID)
+                .jsonPath("$.name").isEqualTo(NAME)
+                .jsonPath("$.password").isEqualTo(PASSWORD)
+                .jsonPath("$.email").isEqualTo(EMAIL);
+        verify(service).update(anyString(), any(UserRequest.class));
+        verify(userMapper).toResponse(any(User.class));
+
     }
 
     @Test
