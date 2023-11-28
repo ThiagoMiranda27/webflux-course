@@ -1,10 +1,8 @@
 package br.com.thiagomiranda.wefluxcourse.controller;
 
 import br.com.thiagomiranda.wefluxcourse.entity.User;
-import br.com.thiagomiranda.wefluxcourse.mapper.UserMapper;
 import br.com.thiagomiranda.wefluxcourse.model.request.UserRequest;
 import br.com.thiagomiranda.wefluxcourse.service.UserService;
-import com.mongodb.reactivestreams.client.MongoClient;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,11 +31,6 @@ class UserControllerIplTest {
     @MockBean
     private UserService service;
 
-    @MockBean
-    private UserMapper mapper;
-
-    @MockBean
-    private MongoClient mongoClient;
 
     @Test
     @DisplayName("Test endpoint save with sucess ")
