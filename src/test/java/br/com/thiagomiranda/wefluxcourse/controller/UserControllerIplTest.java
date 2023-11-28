@@ -154,6 +154,13 @@ class UserControllerIplTest {
     }
 
     @Test
-    void delete() {
+    @DisplayName("Test delete endpoint with sucess")
+    void testDeleteSucess() {
+        when(service.delete(anyString())).thenReturn(just(User.builder().build()));
+
+        webTestClient.delete().uri("/users/" + ID)
+                .exchange()
+                .expectStatus().isOk();
+        verify(service).delete(anyString());
     }
 }
