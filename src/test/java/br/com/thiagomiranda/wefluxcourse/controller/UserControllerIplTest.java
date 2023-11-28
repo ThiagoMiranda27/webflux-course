@@ -30,6 +30,10 @@ import static reactor.core.publisher.Mono.just;
 @AutoConfigureWebTestClient
 class UserControllerIplTest {
 
+    public static final String ID = "12356";
+    public static final String NAME = "Thiago";
+    public static final String PASSWORD = "123";
+    public static final String EMAIL = "thiago@email.com";
     @Autowired
     private WebTestClient webTestClient;
 
@@ -61,7 +65,7 @@ class UserControllerIplTest {
     @Test
     @DisplayName("Test endpoint save with bad request")
     void testSaveWithBadRequest() {
-        final var request = new UserRequest(" Thiago", "thiago@email", "123");
+        final var request = new UserRequest(NAME.concat(" "), EMAIL, PASSWORD);
 
         webTestClient.post().uri("/users")
                 .contentType(APPLICATION_JSON)
@@ -81,21 +85,21 @@ class UserControllerIplTest {
     @DisplayName("Test find by id endpoint with sucess")
     void testFindByIdWithSucess() {
 
-        final var id = "12356";
-        final var userResponse = new UserResponse(id,"Thiago", "123","thiago@email.com");
+
+        final var userResponse = new UserResponse(ID, NAME, PASSWORD, EMAIL);
 
         when(service.findById(anyString())).thenReturn(just(User.builder().build()));
         when(userMapper.toResponse(any(User.class))).thenReturn(userResponse);
 
-        webTestClient.get().uri("/users/" + id)
+        webTestClient.get().uri("/users/" + "12356")
                 .accept(APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
-                .jsonPath("$.id").isEqualTo(id)
-                .jsonPath("$.name").isEqualTo("Thiago")
-                .jsonPath("$.password").isEqualTo("123")
-                .jsonPath("$.email").isEqualTo("thiago@email.com");
+                .jsonPath("$.id").isEqualTo(ID)
+                .jsonPath("$.name").isEqualTo(NAME)
+                .jsonPath("$.password").isEqualTo(PASSWORD)
+                .jsonPath("$.email").isEqualTo(EMAIL);
 
     }
 
