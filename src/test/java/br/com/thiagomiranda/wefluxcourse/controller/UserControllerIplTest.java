@@ -35,6 +35,7 @@ class UserControllerIplTest {
     public static final String NAME = "Thiago";
     public static final String PASSWORD = "123";
     public static final String EMAIL = "thiago@email.com";
+    public static final String BASE_URI = "/users";
     @Autowired
     private WebTestClient webTestClient;
 
@@ -54,7 +55,7 @@ class UserControllerIplTest {
         final var request = new UserRequest("Thiago", "thiago@email", "123");
         when(service.save(any(UserRequest.class))).thenReturn(just(User.builder().build()));
 
-        webTestClient.post().uri("/users")
+        webTestClient.post().uri(BASE_URI)
                 .contentType(APPLICATION_JSON)
                 .body(fromValue(request))
                 .exchange()
@@ -68,13 +69,13 @@ class UserControllerIplTest {
     void testSaveWithBadRequest() {
         final var request = new UserRequest(NAME.concat(" "), EMAIL, PASSWORD);
 
-        webTestClient.post().uri("/users")
+        webTestClient.post().uri(BASE_URI)
                 .contentType(APPLICATION_JSON)
                 .body(fromValue(request))
                 .exchange()
                 .expectStatus().isBadRequest()
                 .expectBody()
-                .jsonPath("$.path").isEqualTo("/users")
+                .jsonPath("$.path").isEqualTo(BASE_URI)
                 .jsonPath("$.status").isEqualTo(BAD_REQUEST.value())
                 .jsonPath("$.error").isEqualTo("Validation error")
                 .jsonPath("$.message").isEqualTo("Error on validation attributes")
@@ -92,7 +93,7 @@ class UserControllerIplTest {
         when(service.findById(anyString())).thenReturn(just(User.builder().build()));
         when(userMapper.toResponse(any(User.class))).thenReturn(userResponse);
 
-        webTestClient.get().uri("/users/" + "12356")
+        webTestClient.get().uri(BASE_URI + "/" + "12356")
                 .accept(APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
@@ -115,7 +116,7 @@ class UserControllerIplTest {
             when(service.findAll()).thenReturn(Flux.just(User.builder().build()));
             when(userMapper.toResponse(any(User.class))).thenReturn(userResponse);
 
-            webTestClient.get().uri("/users")
+            webTestClient.get().uri(BASE_URI)
                     .accept(APPLICATION_JSON)
                     .exchange()
                     .expectStatus().isOk()
@@ -138,7 +139,7 @@ class UserControllerIplTest {
         when(service.update(anyString(),any(UserRequest.class))).thenReturn(just(User.builder().build()));
         when(userMapper.toResponse(any(User.class))).thenReturn(userResponse);
 
-        webTestClient.patch().uri("/users/" + ID)
+        webTestClient.patch().uri(BASE_URI + "/" + ID)
                 .contentType(APPLICATION_JSON)
                 .body(fromValue(request))
                 .exchange()
@@ -158,7 +159,7 @@ class UserControllerIplTest {
     void testDeleteSucess() {
         when(service.delete(anyString())).thenReturn(just(User.builder().build()));
 
-        webTestClient.delete().uri("/users/" + ID)
+        webTestClient.delete().uri(BASE_URI + "/" + ID)
                 .exchange()
                 .expectStatus().isOk();
         verify(service).delete(anyString());
