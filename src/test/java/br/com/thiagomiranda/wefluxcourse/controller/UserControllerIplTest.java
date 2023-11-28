@@ -3,6 +3,7 @@ package br.com.thiagomiranda.wefluxcourse.controller;
 import br.com.thiagomiranda.wefluxcourse.entity.User;
 import br.com.thiagomiranda.wefluxcourse.mapper.UserMapper;
 import br.com.thiagomiranda.wefluxcourse.model.request.UserRequest;
+import br.com.thiagomiranda.wefluxcourse.model.response.UserResponse;
 import br.com.thiagomiranda.wefluxcourse.service.UserService;
 import com.mongodb.reactivestreams.client.MongoClient;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -76,7 +78,25 @@ class UserControllerIplTest {
     }
 
     @Test
-    void findById() {
+    @DisplayName("Test find by id endpoint with sucess")
+    void testFindByIdWithSucess() {
+
+        final var id = "12356";
+        final var userResponse = new UserResponse(id,"Thiago", "123","thiago@email.com");
+
+        when(service.findById(anyString())).thenReturn(just(User.builder().build()));
+        when(userMapper.toResponse(any(User.class))).thenReturn(userResponse);
+
+        webTestClient.get().uri("/users/" + id)
+                .accept(APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.id").isEqualTo(id)
+                .jsonPath("$.name").isEqualTo("Thiago")
+                .jsonPath("$.password").isEqualTo("123")
+                .jsonPath("$.email").isEqualTo("thiago@email.com");
+
     }
 
     @Test
